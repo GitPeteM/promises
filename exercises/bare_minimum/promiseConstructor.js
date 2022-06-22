@@ -6,45 +6,39 @@
 
 var request = require('needle');
 var Promise = require('bluebird');
-// var fs = require('fs');
 var fs = require('fs');
-// Promise.promisifyAll(fs);
 
-const readFile = Promise.promisify(fs.readFile);
+Promise.promisifyAll(fs);
+Promise.promisifyAll(request);
+
 
 // This function should retrieve the first line of the file at `filePath`
 var pluckFirstLineFromFileAsync = function(filePath) {
 
-  var promise = new Promise((resolve, reject) => {
-    fs.readFile(filePath, (err, data) => {
-      if (err) {
-        // console.log(err)
-        reject(err);
-      } else {
-        resolve(data.toString().split('\n')[0]);
-      }
-    });
-  });
-
-  return promise;
+  return fs.readFileAsync(filePath)
+    .then((data) => data.toString().split('\n')[0])
+    .catch((error) => new Error(error));
 };
 
 
 // This function should retrieve the status code of a GET request to `url`
 var getStatusCodeAsync = function(url) {
+  return request.getAsync(url)
+    .then(response => response.statusCode)
+    .catch(error => throw new Error(error));
 
-  var promise = new Promise((resolve, reject) => {
-    request.get(url, (error, response) => {
-      if (error) {
-        // console.log(err)
-        reject(error);
-      } else {
-        resolve(response.statusCode);
-      }
-    });
-  });
+  // var promise = new Promise((resolve, reject) => {
+  //   request.get(url, (error, response) => {
+  //     if (error) {
+  //       // console.log(err)
+  //       reject(error);
+  //     } else {
+  //       resolve(response.statusCode);
+  //     }
+  //   });
+  // });
 
-  return promise;
+  // return promise;
 
 };
 

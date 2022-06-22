@@ -10,11 +10,31 @@
 
 var fs = require('fs');
 var Promise = require('bluebird');
+var getGitHubProfileAsync = require('./promisification.js').getGitHubProfileAsync;
+
+Promise.promisifyAll(fs);
 
 
 
 var fetchProfileAndWriteToFile = function(readFilePath, writeFilePath) {
-  // TODO
+  // read from file
+  return fs.readFileAsync(readFilePath)
+    // proccess file data
+    .then((data) => {
+      data = data.toString();
+      if (!data) {
+        throw new Error('File is empty!');
+      }
+      var handle = data.split('\n')[0];
+
+      // console.log(`------- Handle to search for: ${handle}`);
+      // make get request
+      return getGitHubProfileAsync(handle);
+    })
+    // proccess get request
+    .then((data) => {
+      return fs.writeFileAsync(writeFilePath, JSON.stringify(data));
+    });
 };
 
 // Export these functions so we can test them

@@ -35,14 +35,16 @@ var getGitHubProfileAsync = Promise.promisify(getGitHubProfile);
 // What is promisify doing for us? In creating a Promise out of getGitHubProfile
 var getGitHubProfileAsync2 = (user) => {
   return new Promise ((resolve, reject) => {
-    getGitHubProfile(user, (err, data) => {
+    var callback = (err, data) => {
       //invokes resolve and reject somehow
       if(err) {
         reject(err);
       } else {
         resolve(data);
       }
-    });
+    }
+
+    getGitHubProfile(user, callback);
   });
 };
 
@@ -76,7 +78,7 @@ var generateRandomToken = function(callback) {
   });
 };
 
-var generateRandomTokenAsync = Promise.promisify(generateRandomToken); // TODO
+var generateRandomTokenAsync = Promise.promisify(generateRandomToken);
 
 
 // (3) Asyncronous file manipulation
@@ -94,7 +96,7 @@ var readFileAndMakeItFunny = function(filePath, callback) {
   });
 };
 
-var readFileAndMakeItFunnyAsync = Promise.promisify(readFileAndMakeItFunny); // TODO
+var readFileAndMakeItFunnyAsync = Promise.promisify(readFileAndMakeItFunny);
 
 // Export these functions so we can test them and reuse them in later exercises
 module.exports = {
