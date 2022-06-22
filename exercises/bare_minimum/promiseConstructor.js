@@ -26,15 +26,25 @@ var pluckFirstLineFromFileAsync = function(filePath) {
     });
   });
 
-  // var promise = readFile(filePath);
-
   return promise;
 };
 
 
 // This function should retrieve the status code of a GET request to `url`
 var getStatusCodeAsync = function(url) {
-  // TODO
+
+  var promise = new Promise((resolve, reject) => {
+    request.get(url, (error, response) => {
+      if (error) {
+        // console.log(err)
+        reject(error);
+      } else {
+        resolve(response.statusCode);
+      }
+    });
+  });
+
+  return promise;
 
 };
 
